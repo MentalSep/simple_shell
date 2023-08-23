@@ -13,7 +13,7 @@ char *prompt(void)
 		write(STDOUT_FILENO, "($) ", 4);
 	if (getline(&line, &n, stdin) == -1)
 		return (NULL);
-	line[_strlen(line) - 1] = '\0';
+	line[_strlen(line)] = '\0';
 	return (line);
 }
 
