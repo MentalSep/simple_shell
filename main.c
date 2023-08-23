@@ -12,7 +12,10 @@ char *prompt(void)
 	if (isatty(STDIN_FILENO))
 		write(STDOUT_FILENO, "($) ", 4);
 	if (getline(&line, &n, stdin) == -1)
+	{
+		free(line);
 		return (NULL);
+	}
 
 	line[_strlen(line) - 1] = '\0';
 	return (line);
@@ -21,12 +24,14 @@ char *prompt(void)
 /**
  * checkBuiltin - checks if the command is a builtin
  * @tokens: array of tokens
+ * @line: command line
  * Return: 0 if builtin, 1 if not
  */
-int checkBuiltin(char **tokens)
+int checkBuiltin(char **tokens, char *line)
 {
 	if (_strcmp(tokens[0], "exit") == 0)
 	{
+		free(line);
 		free(tokens);
 		exit(0);
 	}
@@ -108,13 +113,15 @@ int main(__attribute__((unused))int argc, char **argv)
 			line = NULL;
 			continue;
 		}
-		if (checkBuiltin(tokens) == 2)
+		if (checkBuiltin(tokens, line) == 2)
 			continue;
 		if (access(tokens[0], X_OK) != 1)
-			status = execute(tokens, argv[0], line_count);
+			status = execute(tokens, argv[0], line_count), free(line), free(tokens);
 		else
 			print_error(argv[0], line_count, tokens[0]), status = -1;
 	}
+	free(line);
+	free(tokens);
 	if (status)
 		return (127);
 	else

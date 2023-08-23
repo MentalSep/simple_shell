@@ -35,7 +35,9 @@ char **getArgs(char *line, char *delim)
 	char *token;
 	int i = 0;
 
-	args = malloc(sizeof(char *) * wordCount(line, delim) + 1);
+	if (!line || !delim)
+		return (NULL);
+	args = malloc(sizeof(char *) * (wordCount(line, delim) + 1));
 	if (!args)
 		return (NULL);
 
@@ -51,7 +53,6 @@ char **getArgs(char *line, char *delim)
 		if (args[i - 1][_strlen(args[i - 1]) - 1] == '\n')
 			args[i - 1][_strlen(args[i - 1]) - 1] = '\0';
 	args[i] = NULL;
-
 	return (args);
 }
 
@@ -80,6 +81,7 @@ char *getPath(char *bin)
 		if (access(copy, X_OK) == 0)
 		{
 			free(Pcopy);
+			free(arr);
 			return (copy);
 		}
 		free(copy);
