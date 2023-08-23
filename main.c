@@ -54,7 +54,7 @@ int checkBuiltin(char **tokens, char *line)
  * @line_count: line count
  * Return: void
  */
-void execute(char **tokens, char *cmd, int line_count)
+int execute(char **tokens, char *cmd, int line_count)
 {
 	pid_t pid;
 	int status;
@@ -67,10 +67,8 @@ void execute(char **tokens, char *cmd, int line_count)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (path)
-			if (execve(path, tokens, environ) == -1)
-				print_error(cmd, line_count, tokens[0]);
-		exit(0);
+		if (execve(path, tokens, environ) == -1)
+			print_error(cmd, line_count, tokens[0]);
 	}
 	else if (pid < 0)
 		print_error(cmd, line_count, tokens[0]);
@@ -78,6 +76,7 @@ void execute(char **tokens, char *cmd, int line_count)
 		wait(&status);
 	if (tokens[0][0] != '/' && tokens[0][0] != '.')
 		free(path);
+	return (status);
 }
 
 /**
@@ -88,7 +87,7 @@ void execute(char **tokens, char *cmd, int line_count)
  */
 int main(__attribute__((unused))int argc, char **argv)
 {
-	int line_count = 0;
+	int line_count = 0, status = 0;
 	char *line = NULL;
 	char **tokens = NULL;
 
@@ -115,13 +114,16 @@ int main(__attribute__((unused))int argc, char **argv)
 			continue;
 		if (access(tokens[0], X_OK) != 1)
 		{
-			execute(tokens, argv[0], line_count);
+			status = execute(tokens, argv[0], line_count);
 			free(line);
 		}
 		else
-			print_error(argv[0], line_count, tokens[0]);
+			print_error(argv[0], line_count, tokens[0]), status = -1;
 		free(tokens);
 	}
 	free(line);
-	return (0);
+	if (status)
+		return (127);
+	else
+		return (0);
 }
