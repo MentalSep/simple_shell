@@ -12,11 +12,7 @@ char *prompt(void)
 	if (isatty(STDIN_FILENO))
 		write(STDOUT_FILENO, "($) ", 4);
 	if (getline(&line, &n, stdin) == -1)
-	{
-		free(line);
 		return (NULL);
-	}
-
 	line[_strlen(line) - 1] = '\0';
 	return (line);
 }
@@ -33,7 +29,7 @@ int checkBuiltin(char **tokens, char *line)
 	{
 		free(line);
 		free(tokens);
-		exit(errno);
+		exit(0);
 	}
 	else if (_strcmp(tokens[0], "env") == 0)
 	{
@@ -58,7 +54,7 @@ int checkBuiltin(char **tokens, char *line)
  * @line_count: line count
  * Return: void
  */
-int execute(char **tokens, char *cmd, int line_count)
+void execute(char **tokens, char *cmd, int line_count)
 {
 	pid_t pid;
 	int status;
@@ -78,8 +74,8 @@ int execute(char **tokens, char *cmd, int line_count)
 		print_error(cmd, line_count, tokens[0]);
 	else
 		wait(&status);
-	free(path);
-	return (status);
+	if (tokens[0][0] != '/' && tokens[0][0] != '.')
+		free(path);
 }
 
 /**
@@ -90,7 +86,7 @@ int execute(char **tokens, char *cmd, int line_count)
  */
 int main(__attribute__((unused))int argc, char **argv)
 {
-	int line_count = 0, status = 0;
+	int line_count = 0;
 	char *line = NULL;
 	char **tokens = NULL;
 
@@ -117,16 +113,13 @@ int main(__attribute__((unused))int argc, char **argv)
 			continue;
 		if (access(tokens[0], X_OK) != 1)
 		{
-			status = execute(tokens, argv[0], line_count);
-			free(line), free(tokens);
+			execute(tokens, argv[0], line_count);
+			free(line);
 		}
 		else
-			print_error(argv[0], line_count, tokens[0]), status = -1;
+			print_error(argv[0], line_count, tokens[0]);
+		free(tokens);
 	}
 	free(line);
-	free(tokens);
-	if (status)
-		return (127);
-	else
-		return (0);
+	return (0);
 }

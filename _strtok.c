@@ -6,7 +6,7 @@
  * @delim: delimiter
  * Return: pointer to the next token
  */
-char *_strtow(char *str, char *delim)
+char *_strtok(char *str, char *delim)
 {
 	static char *token;
 	static char *next;

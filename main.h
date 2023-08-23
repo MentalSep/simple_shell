@@ -11,7 +11,7 @@ extern char **environ;
 
 void print_env(void);
 int _strlen(char *s);
-char *_strtow(char *str, char *delim);
+char *_strtok(char *str, char *delim);
 char **getArgs(char *line, char *delim);
 int _strcmp(char *s1, char *s2);
 void print_error(char *argv, int count, char *line);
