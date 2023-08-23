@@ -1,5 +1,11 @@
 #include "main.h"
 
+/**
+ * wordCount - counts the number of words in a string
+ * @str: string to be counted
+ * @delim: delimiter
+ * Return: number of words
+ */
 int wordCount(char *str, char *delim)
 {
 	int i = 0, count = 0;
