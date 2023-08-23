@@ -33,7 +33,7 @@ int checkBuiltin(char **tokens, char *line)
 	{
 		free(line);
 		free(tokens);
-		exit(0);
+		exit(errno);
 	}
 	else if (_strcmp(tokens[0], "env") == 0)
 	{
@@ -116,7 +116,10 @@ int main(__attribute__((unused))int argc, char **argv)
 		if (checkBuiltin(tokens, line) == 2)
 			continue;
 		if (access(tokens[0], X_OK) != 1)
-			status = execute(tokens, argv[0], line_count), free(line), free(tokens);
+		{
+			status = execute(tokens, argv[0], line_count);
+			free(line), free(tokens);
+		}
 		else
 			print_error(argv[0], line_count, tokens[0]), status = -1;
 	}
