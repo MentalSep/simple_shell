@@ -67,8 +67,10 @@ void execute(char **tokens, char *cmd, int line_count)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(path, tokens, environ) == -1)
-			print_error(cmd, line_count, tokens[0]);
+		if (path)
+			if (execve(path, tokens, environ) == -1)
+				print_error(cmd, line_count, tokens[0]);
+		exit(0);
 	}
 	else if (pid < 0)
 		print_error(cmd, line_count, tokens[0]);
@@ -102,7 +104,7 @@ int main(__attribute__((unused))int argc, char **argv)
 			line = NULL;
 			continue;
 		}
-		tokens = getArgs(line, " ");
+		tokens = getArgs(line, " \t");
 		if (tokens == NULL || *tokens == NULL)
 		{
 			free(line);

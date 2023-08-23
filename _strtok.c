@@ -1,6 +1,23 @@
 #include "main.h"
 
 /**
+ * checkDelim - checks if a character is a delimiter
+ * @c: character to be checked
+ * @delim: delimiter
+ * Return: 1 if true, 0 if false
+ */
+int checkDelim(char c, char *delim)
+{
+	int i = 0;
+
+	for (; delim[i]; i++)
+	{
+		if (c == delim[i])
+			return (1);
+	}
+	return (0);
+}
+/**
  * _strtok - function that splits a string into tokens.
  * @str: string to be splitted
  * @delim: delimiter
@@ -20,7 +37,7 @@ char *_strtok(char *str, char *delim)
 
 	for (; *next; next++)
 	{
-		if (*next != delim[0])
+		if (!checkDelim(*next, delim))
 			break;
 	}
 	if (*next == '#' || *next == '\0' || *next == '\n')
@@ -28,7 +45,7 @@ char *_strtok(char *str, char *delim)
 
 	while (*next != '\0')
 	{
-		if (*next == delim[0])
+		if (checkDelim(*next, delim))
 		{
 			next++;
 			break;
