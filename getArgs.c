@@ -41,13 +41,13 @@ char **getArgs(char *line, char *delim)
 	if (!args)
 		return (NULL);
 
-	token = _strtok(line, delim);
+	token = _strtow(line, delim);
 	for (; token; i++)
 	{
 		if (token[0] == '\n')
 			break;
 		args[i] = token;
-		token = _strtok(NULL, delim);
+		token = _strtow(NULL, delim);
 	}
 	if (i)
 		if (args[i - 1][_strlen(args[i - 1]) - 1] == '\n')
