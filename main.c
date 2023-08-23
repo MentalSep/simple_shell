@@ -57,7 +57,7 @@ int checkBuiltin(char **tokens, char *line)
 int execute(char **tokens, char *cmd, int line_count)
 {
 	pid_t pid;
-	int status;
+	int status = -1;
 	char *path = NULL;
 
 	if (tokens[0][0] != '/' && tokens[0][0] != '.')
@@ -69,6 +69,7 @@ int execute(char **tokens, char *cmd, int line_count)
 	{
 		if (execve(path, tokens, environ) == -1)
 			print_error(cmd, line_count, tokens[0]);
+		exit(-1);
 	}
 	else if (pid < 0)
 		print_error(cmd, line_count, tokens[0]);
