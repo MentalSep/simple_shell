@@ -68,7 +68,7 @@ void execute(char **tokens, char *cmd, int line_count)
 	if (pid == 0)
 	{
 		if (path)
-			if (execve(path, tokens, environ) == -1)
+			if (execve(path, tokens, NULL) == -1)
 				print_error(cmd, line_count, tokens[0]);
 		exit(0);
 	}
