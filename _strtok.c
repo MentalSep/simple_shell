@@ -23,7 +23,7 @@ char *_strtok(char *str, char *delim)
 		if (*next != *delim)
 			break;
 	}
-	if (*next == '#')
+	if (*next == '#' || *next == '\0' || *next == '\n')
 		return (NULL);
 
 	while (*next != '\0')
