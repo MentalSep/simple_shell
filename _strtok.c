@@ -20,7 +20,7 @@ char *_strtok(char *str, char *delim)
 
 	for (; *next; next++)
 	{
-		if (*next != *delim)
+		if (*next != delim[0])
 			break;
 	}
 	if (*next == '#' || *next == '\0' || *next == '\n')
@@ -28,7 +28,7 @@ char *_strtok(char *str, char *delim)
 
 	while (*next != '\0')
 	{
-		if (*next == *delim)
+		if (*next == delim[0])
 		{
 			next++;
 			break;

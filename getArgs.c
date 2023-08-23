@@ -12,10 +12,10 @@ int wordCount(char *str, char *delim)
 
 	for (; str[i]; i++)
 	{
-		if (str[i] != *delim)
+		if (str[i] != delim[0])
 		{
 			count++;
-			for (; str[i] && str[i] != *delim; i++)
+			for (; str[i] && str[i] != delim[0]; i++)
 				;
 			i--;
 		}
