@@ -120,7 +120,7 @@ int main(__attribute__((unused))int argc, char **argv)
 		cmdP = getPath(tokens[0]);
 		if (cmdP ? access(cmdP, F_OK) != -1 : 0)
 			status = execute(tokens, argv[0], line_count), free(line),
-			free(tokens);
+			free(tokens), free(cmdP);
 		else
 			print_error(argv[0], line_count, tokens[0]), status = -1,
 			free(line), free(tokens);
