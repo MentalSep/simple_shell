@@ -12,7 +12,10 @@ char *prompt(void)
 	if (isatty(STDIN_FILENO))
 		write(STDOUT_FILENO, "($) ", 4);
 	if (getline(&line, &n, stdin) == -1)
+	{	
+		free(line);
 		return (NULL);
+	}
 	line[_strlen(line)] = '\0';
 	return (line);
 }
