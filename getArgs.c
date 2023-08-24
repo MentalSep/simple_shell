@@ -66,6 +66,8 @@ char *getPath(char *bin)
 	char *path, *copy, *Pcopy, **arr;
 	int i;
 
+	if (bin[0] == '/' || bin[0] == '.')
+		return (bin);
 	path = getenv("PATH");
 	if (!path)
 		return (NULL);

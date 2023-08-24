@@ -12,7 +12,7 @@ char *prompt(void)
 	if (isatty(STDIN_FILENO))
 		write(STDOUT_FILENO, "($) ", 4);
 	if (getline(&line, &n, stdin) == -1)
-	{	
+	{
 		free(line);
 		return (NULL);
 	}
@@ -110,20 +110,20 @@ int main(__attribute__((unused))int argc, char **argv)
 		tokens = getArgs(line, " \t");
 		if (tokens == NULL || *tokens == NULL)
 		{
-			free(line);
+			free(line), free(tokens);
 			line = NULL;
 			continue;
 		}
 		if (checkBuiltin(tokens, line) == 2)
-			continue;
-		if (access(tokens[0], X_OK) != 1)
 		{
-			status = execute(tokens, argv[0], line_count);
-			free(line);
+			free(line), free(tokens);
+			continue;
 		}
+		if (access(getPath(tokens[0]), F_OK) != -1)
+			status = execute(tokens, argv[0], line_count), free(line), free(tokens);
 		else
-			print_error(argv[0], line_count, tokens[0]), status = -1;
-		free(tokens);
+			print_error(argv[0], line_count, tokens[0]), status = -1,
+			free(line), free(tokens);
 	}
 	free(line);
 	if (status)
