@@ -92,7 +92,7 @@ int execute(char **tokens, char *cmd, int line_count)
 int main(__attribute__((unused))int argc, char **argv)
 {
 	int line_count = 0, status = 0;
-	char *line = NULL;
+	char *line = NULL, *cmdP = NULL;
 	char **tokens = NULL;
 
 	while (1)
@@ -104,14 +104,12 @@ int main(__attribute__((unused))int argc, char **argv)
 		if (line[0] == '\n')
 		{
 			free(line);
-			line = NULL;
 			continue;
 		}
 		tokens = getArgs(line, " \t");
 		if (tokens == NULL || *tokens == NULL)
 		{
 			free(line), free(tokens);
-			line = NULL;
 			continue;
 		}
 		if (checkBuiltin(tokens, line) == 2)
@@ -119,8 +117,10 @@ int main(__attribute__((unused))int argc, char **argv)
 			free(line), free(tokens);
 			continue;
 		}
-		if (access(getPath(tokens[0]), F_OK) != -1)
-			status = execute(tokens, argv[0], line_count), free(line), free(tokens);
+		cmdP = getPath(tokens[0]);
+		if (cmdP ? access(cmdP, F_OK) != -1 : 0)
+			status = execute(tokens, argv[0], line_count), free(line),
+			free(tokens);
 		else
 			print_error(argv[0], line_count, tokens[0]), status = -1,
 			free(line), free(tokens);
