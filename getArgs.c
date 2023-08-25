@@ -67,7 +67,7 @@ char *getPath(char *bin)
 	int i;
 
 	if (bin[0] == '/' || bin[0] == '.')
-		return (bin);
+		return (_strdup(bin));
 	path = getenv("PATH");
 	if (!path)
 		return (NULL);

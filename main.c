@@ -24,15 +24,16 @@ char *prompt(void)
  * checkBuiltin - checks if the command is a builtin
  * @tokens: array of tokens
  * @line: command line
+ * @status: exit status
  * Return: 0 if builtin, 1 if not
  */
-int checkBuiltin(char **tokens, char *line)
+int checkBuiltin(char **tokens, char *line, int status)
 {
 	if (_strcmp(tokens[0], "exit") == 0)
 	{
 		free(line);
 		free(tokens);
-		exit(0);
+		status == 0 ? exit(0) : exit(2);
 	}
 	else if (_strcmp(tokens[0], "env") == 0)
 	{
@@ -55,18 +56,14 @@ int checkBuiltin(char **tokens, char *line)
  * @tokens: array of tokens
  * @cmd: name of the shell
  * @line_count: line count
+ * @path: path of the command
  * Return: void
  */
-int execute(char **tokens, char *cmd, int line_count)
+int execute(char **tokens, char *cmd, int line_count, char *path)
 {
 	pid_t pid;
-	int status = -1;
-	char *path = NULL;
+	int status = 0;
 
-	if (tokens[0][0] != '/' && tokens[0][0] != '.')
-		path = getPath(tokens[0]);
-	else
-		path = tokens[0];
 	pid = fork();
 	if (pid == 0)
 	{
@@ -78,9 +75,30 @@ int execute(char **tokens, char *cmd, int line_count)
 		print_error(cmd, line_count, tokens[0]);
 	else
 		wait(&status);
-	if (tokens[0][0] != '/' && tokens[0][0] != '.')
-		free(path);
+
 	return (status);
+/*
+ *	char *path = NULL;
+ *
+ *	if (tokens[0][0] != '/' && tokens[0][0] != '.')
+ *		path = getPath(tokens[0]);
+ *	else
+ *		path = tokens[0];
+ *	pid = fork();
+ *	if (pid == 0)
+ *	{
+ *		if (execve(path, tokens, environ) == -1)
+ *			print_error(cmd, line_count, tokens[0]);
+ *		exit(-1);
+ *	}
+ *	else if (pid < 0)
+ *		print_error(cmd, line_count, tokens[0]);
+ *	else
+ *		wait(&status);
+ *	if (tokens[0][0] != '/' && tokens[0][0] != '.')
+ *		free(path);
+ *	return (status);
+ */
 }
 
 /**
@@ -112,14 +130,14 @@ int main(__attribute__((unused))int argc, char **argv)
 			free(line), free(tokens);
 			continue;
 		}
-		if (checkBuiltin(tokens, line) == 2)
+		if (checkBuiltin(tokens, line, status) == 2)
 		{
 			free(line), free(tokens);
 			continue;
 		}
 		cmdP = getPath(tokens[0]);
 		if (cmdP ? access(cmdP, F_OK) != -1 : 0)
-			status = execute(tokens, argv[0], line_count), free(line),
+			status = execute(tokens, argv[0], line_count, cmdP), free(line),
 			free(tokens), free(cmdP);
 		else
 			print_error(argv[0], line_count, tokens[0]), status = -1,
