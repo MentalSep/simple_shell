@@ -19,5 +19,6 @@ char *getPath(char *bin);
 char *_strcat(char *dest, char *src);
 char *_strdup(char *str);
 char *_strcpy(char *dest, char *src);
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 
 #endif
