@@ -77,28 +77,6 @@ int execute(char **tokens, char *cmd, int line_count, char *path)
 		wait(&status);
 
 	return (status);
-/*
- *	char *path = NULL;
- *
- *	if (tokens[0][0] != '/' && tokens[0][0] != '.')
- *		path = getPath(tokens[0]);
- *	else
- *		path = tokens[0];
- *	pid = fork();
- *	if (pid == 0)
- *	{
- *		if (execve(path, tokens, environ) == -1)
- *			print_error(cmd, line_count, tokens[0]);
- *		exit(-1);
- *	}
- *	else if (pid < 0)
- *		print_error(cmd, line_count, tokens[0]);
- *	else
- *		wait(&status);
- *	if (tokens[0][0] != '/' && tokens[0][0] != '.')
- *		free(path);
- *	return (status);
- */
 }
 
 /**
